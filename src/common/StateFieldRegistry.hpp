@@ -8,16 +8,21 @@
 class StateFieldRegistry
 {
 private:
-    vector<ReadableStatefieldBase *> readableFields;
-    vector<WriteableStatefieldBase *> writableFields;
-    vector<InternalStatefieldBase *> internalFields;
+    std::vector<StateFieldBase *> readable_fields;
+    std::vector<StateFieldBase *> writeable_fields;
+    std::vector<StateFieldBase *> internal_fields;
 
-    bool addReadableField(ReadableStateFieldBase *field);
-    bool addWritableField(WritableStatefieldBase *field);
-    bool addInternalField(InternalStateFieldBase *field);
+public:
+    bool add_readable_field(StateFieldBase *field);
+    bool add_writeable_field(StateFieldBase *field);
+    bool add_internal_field(StateFieldBase *field);
 
-    ReadableStateFieldBase *findReadableField(const std::string &);
-    WritableStatefieldBase *findWritableField(const std::string &);
-    InternalStateFieldBase *findInternalField(const std::string &);
-}
+    std::vector<StateFieldBase *> get_readable_fields();
+    std::vector<StateFieldBase *> get_writeable_fields();
+    std::vector<StateFieldBase *> get_internal_fields();
+
+    StateFieldBase *find_readable_field(const std::string &);
+    StateFieldBase *find_writeable_field(const std::string &);
+    StateFieldBase *find_internal_field(const std::string &);
+};
 #endif
