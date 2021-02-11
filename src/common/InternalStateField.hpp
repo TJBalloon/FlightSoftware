@@ -1,4 +1,4 @@
-#include <StateField.hpp>
+#include "StateField.hpp"
 #include <string>
 
 template <typename T>
@@ -18,4 +18,4 @@ public:
 
     const T get_value() const { return this->value; }
     void set_value(T value) { this->value = value; }
-}
+};
