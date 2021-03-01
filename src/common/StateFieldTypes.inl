@@ -3,25 +3,18 @@
 
 #include <string>
 #include "StateField.hpp"
-
-class ReadableStateFieldBase : public virtual StateFieldBase
-{
-};
-
-class WriteableStateFieldBase : public virtual StateFieldBase
-{
-};
+#include "Serializer.hpp"
 class InternalStateFieldBase : public virtual StateFieldBase
 {
 };
 
-template <class T>
-class ReadableStateField : public ReadableStateFieldBase, public StateField<T>
+template <typename T>
+class InternalStateField : public InternalStateFieldBase, public StateField<T>
 {
 public:
-    ReadableStateField(const std::string &name)
+    InternalStateField(const std::string &name)
         : StateField<T>(name){};
-    ReadableStateField(const std::string &name, T v)
+    InternalStateField(const std::string &name, T v)
         : StateField<T>(name)
     {
         this->value = v;
@@ -32,13 +25,36 @@ public:
     }
 };
 
-template <typename T>
-class InternalStateField : public InternalStateFieldBase, public StateField<T>
+class SerializableStateFieldBase : virtual public StateFieldBase
 {
 public:
-    InternalStateField(const std::string &name)
+    virtual void serialize() = 0;
+    virtual void deserialize() = 0;
+    virtual const char *print() const = 0;
+};
+
+template <typename T>
+class SerializableStateField : public StateField<T>, virtual public SerializableStateFieldBase
+{
+protected:
+    Serializer<T> _serializer;
+};
+
+class ReadableStateFieldBase : public virtual StateFieldBase
+{
+};
+
+class WriteableStateFieldBase : public virtual StateFieldBase
+{
+};
+
+template <class T>
+class ReadableStateField : public ReadableStateFieldBase, public StateField<T>
+{
+public:
+    ReadableStateField(const std::string &name)
         : StateField<T>(name){};
-    InternalStateField(const std::string &name, T v)
+    ReadableStateField(const std::string &name, T v)
         : StateField<T>(name)
     {
         this->value = v;
