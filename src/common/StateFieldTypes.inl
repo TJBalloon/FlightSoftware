@@ -29,7 +29,6 @@ class SerializableStateFieldBase : virtual public StateFieldBase
 {
 public:
     virtual void serialize() = 0;
-    virtual void deserialize() = 0;
     virtual const char *print() const = 0;
 };
 
@@ -38,18 +37,35 @@ class SerializableStateField : public StateField<T>, virtual public Serializable
 {
 protected:
     Serializer<T> _serializer;
+
+public:
+    SerializableStateField(const std::string &name, const Serializer<T> &s)
+        : StateField<T>(name)
+    {
+        this->_serializer = s;
+    };
+    SerializableStateField(const std::string &name, T v, const Serializer<T> &s)
+        : StateField<T>(name)
+    {
+        this->value = v;
+        this->_serializer = s;
+    };
+
+    void serialize() override { _serializer.serialize(this->_val); }
+
+    const char *print() const override { return _serializer.print(this->_val); }
 };
 
-class ReadableStateFieldBase : public virtual StateFieldBase
+class ReadableStateFieldBase : virtual public SerializableStateFieldBase
 {
 };
 
-class WriteableStateFieldBase : public virtual StateFieldBase
+class WritableStateFieldBase : virtual public SerializableStateFieldBase
 {
 };
 
 template <class T>
-class ReadableStateField : public ReadableStateFieldBase, public StateField<T>
+class ReadableStateField : public ReadableStateFieldBase, public SerializableStateField<T>
 {
 public:
     ReadableStateField(const std::string &name)
@@ -66,12 +82,12 @@ public:
 };
 
 template <typename T>
-class WriteableStateField : public virtual StateFieldBase
+class WritableStateField : public virtual WritableStateFieldBase, public SerializableStateField<T>
 {
 public:
-    WriteableStateField(const std::string &name)
+    WritableStateField(const std::string &name)
         : StateField<T>(name){};
-    WriteableStateField(const std::string &name, T v)
+    WritableStateField(const std::string &name, T v)
         : StateField<T>(name)
     {
         this->value = v;

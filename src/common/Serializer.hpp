@@ -6,7 +6,6 @@ class SerializerBase
 {
 private:
     size_t strlength;
-    size_t bitlength;
 
 protected:
     char *printed_val = nullptr;

@@ -2,7 +2,6 @@
 #define _STATE_FIELD_HPP
 
 #include <string>
-#include <iostream>
 class StateFieldBase
 {
 public:

@@ -10,13 +10,13 @@ bool StateFieldRegistry::add_readable_field(ReadableStateFieldBase *field)
     return true;
 }
 
-bool StateFieldRegistry::add_writeable_field(WriteableStateFieldBase *field)
+bool StateFieldRegistry::add_writable_field(WritableStateFieldBase *field)
 {
-    if (find_writeable_field(field->get_name()) != nullptr)
+    if (find_writable_field(field->get_name()) != nullptr)
     {
         return false;
     }
-    this->writeable_fields.push_back(field);
+    this->writable_fields.push_back(field);
     return true;
 }
 
@@ -42,9 +42,9 @@ ReadableStateFieldBase *StateFieldRegistry::find_readable_field(const std::strin
     return nullptr;
 }
 
-WriteableStateFieldBase *StateFieldRegistry::find_writeable_field(const std::string &string_match)
+WritableStateFieldBase *StateFieldRegistry::find_writable_field(const std::string &string_match)
 {
-    for (WriteableStateFieldBase *s : this->writeable_fields)
+    for (WritableStateFieldBase *s : this->writable_fields)
     {
         if (s->get_name() == string_match)
         {
