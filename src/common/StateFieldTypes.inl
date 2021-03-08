@@ -68,13 +68,10 @@ template <class T>
 class ReadableStateField : public ReadableStateFieldBase, public SerializableStateField<T>
 {
 public:
-    ReadableStateField(const std::string &name)
-        : StateField<T>(name){};
-    ReadableStateField(const std::string &name, T v)
-        : StateField<T>(name)
-    {
-        this->value = v;
-    }
+    ReadableStateField(const std::string &name, const Serializer<T> &s)
+        : SerializableStateField<T>(name, s){};
+    ReadableStateField(const std::string &name, T v, const Serializer<T> &s)
+        : SerializableStateField<T>(name, v, s){};
     virtual const std::string &get_name() const
     {
         return this->name;
@@ -85,13 +82,10 @@ template <typename T>
 class WritableStateField : public virtual WritableStateFieldBase, public SerializableStateField<T>
 {
 public:
-    WritableStateField(const std::string &name)
-        : StateField<T>(name){};
-    WritableStateField(const std::string &name, T v)
-        : StateField<T>(name)
-    {
-        this->value = v;
-    }
+    WritableStateField(const std::string &name, const Serializer<T> &s)
+        : SerializableStateField<T>(name, s){};
+    WritableStateField(const std::string &name, T v, const Serializer<T> &s)
+        : SerializableStateField<T>(name, v, s){};
     virtual const std::string &get_name() const
     {
         return this->name;
