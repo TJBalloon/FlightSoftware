@@ -3,6 +3,15 @@
 
 #include "ControlTask.hpp"
 #include <string>
+#include "constants.hpp"
+#include <unistd.h>
+#include <thread>
+#include <chrono>
+#include <time.h>
+
+typedef std::chrono::steady_clock::time_point sys_time_t;
+typedef std::chrono::steady_clock::duration systime_duration_t;
+
 
 class TimedControlTaskBase
 {
@@ -10,8 +19,22 @@ protected:
     static unsigned int control_cycle_start_time;
 
 public:
-    static unsigned int wait_duration(const unsigned int &delta_t)
+    static unsigned int duration_to_us(const systime_duration_t& delta) {
+       return std::chrono::duration_cast<std::chrono::microseconds>(delta).count();
+    }
+    static sys_time_t get_system_time() {
+      return std::chrono::steady_clock::now();
+    }
+    static void wait_duration(const unsigned int &delta_t)
     {
+      const sys_time_t start = get_system_time();
+      // Wait until execution time
+      while(duration_to_us(get_system_time() - start) < delta_t) {
+          usleep(delta_t);
+        
+      }
+
+
     }
 };
 
@@ -27,19 +50,26 @@ public:
 
     void execute_on_time()
     {
-        // get time to start task
-        // wait until this time
-        // call execute
+      sys_time_t earliest_start_time = 
+        TimedControlTaskBase::control_cycle_start_time + offset;
+      wait_until_time(earliest_start_time);
+      return this->execute();
     }
 
-    unsigned int wait_until_time(const unsigned int &time)
+    void wait_until_time(const unsigned int &time)
     {
+      // Compute timing statistics and publish them to state fields
+      const signed int delta_t = (signed int) duration_to_us(time - get_system_time());
+      const unsigned int wait_time = std::max(delta_t, 0)
+
+      wait_duration(wait_time); 
+ 
     }
 
     const std::string &get_name() const
     {
         return this->_name;
-    }
+    } 
 };
 
 #endif
